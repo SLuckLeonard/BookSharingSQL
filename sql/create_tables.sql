@@ -1,5 +1,18 @@
 -- create_tables.sql
 
+-- Drop tables if they exist
+DROP TABLE IF EXISTS User_Interactions;
+DROP TABLE IF EXISTS Related_Books;
+DROP TABLE IF EXISTS Book_Tags;
+DROP TABLE IF EXISTS Book_Genres;
+DROP TABLE IF EXISTS Availability;
+DROP TABLE IF EXISTS Book_Editions;
+DROP TABLE IF EXISTS Tags;
+DROP TABLE IF EXISTS Genres;
+DROP TABLE IF EXISTS Books;
+DROP TABLE IF EXISTS Authors;
+DROP TABLE IF EXISTS Users;
+
 -- Creating the Books table
 CREATE TABLE Books (
     book_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -27,6 +40,31 @@ CREATE TABLE Genres (
     CONSTRAINT chk_genre_name CHECK (CHAR_LENGTH(genre_name) <= 25)
 );
 
+-- Creating the Tags table
+CREATE TABLE Tags (
+    tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    tag_name VARCHAR(25) NOT NULL,
+    CONSTRAINT chk_tag_name CHECK (CHAR_LENGTH(tag_name) <= 25)
+);
+
+-- Creating the Book_Editions table
+CREATE TABLE Book_Editions (
+    edition_id INT AUTO_INCREMENT PRIMARY KEY,
+    edition_name VARCHAR(50) NOT NULL,
+    book_id INT NOT NULL,
+    publication_date DATE,
+    FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE
+);
+
+-- Creating the Availability table
+CREATE TABLE Availability (
+    availability_id INT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(100) NOT NULL,
+    book_id INT NOT NULL,
+    format VARCHAR(50) NOT NULL, -- Format like 'Hardcover', 'Paperback', 'eBook', etc.
+    FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE
+);
+
 -- Creating the Book_Genres table (Many-to-Many relationship between Books and Genres)
 CREATE TABLE Book_Genres (
     book_id INT NOT NULL,
@@ -34,13 +72,6 @@ CREATE TABLE Book_Genres (
     PRIMARY KEY (book_id, genre_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES Genres(genre_id) ON DELETE CASCADE
-);
-
--- Creating the Tags table
-CREATE TABLE Tags (
-    tag_id INT AUTO_INCREMENT PRIMARY KEY,
-    tag_name VARCHAR(25) NOT NULL,
-    CONSTRAINT chk_tag_name CHECK (CHAR_LENGTH(tag_name) <= 25)
 );
 
 -- Creating the Book_Tags table (Many-to-Many relationship between Books and Tags)
@@ -62,22 +93,6 @@ CREATE TABLE User_Interactions (
     shared BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE
     -- Assuming a Users table exists, add this: FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
-);
-
--- Creating the Allergens_Restrictions table
-CREATE TABLE Allergens_Restrictions (
-    restriction_id INT AUTO_INCREMENT PRIMARY KEY,
-    restriction_name VARCHAR(50) NOT NULL,
-    CONSTRAINT chk_restriction_name CHECK (CHAR_LENGTH(restriction_name) <= 50)
-);
-
--- Creating the Book_Restrictions table (Many-to-Many relationship between Books and Restrictions)
-CREATE TABLE Book_Restrictions (
-    book_id INT NOT NULL,
-    restriction_id INT NOT NULL,
-    PRIMARY KEY (book_id, restriction_id),
-    FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (restriction_id) REFERENCES Allergens_Restrictions(restriction_id) ON DELETE CASCADE
 );
 
 -- Creating the Related_Books table

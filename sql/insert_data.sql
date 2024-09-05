@@ -1,5 +1,24 @@
 -- insert_data.sql
 
+-- Clear existing data from tables
+SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checks to avoid conflicts when truncating
+
+TRUNCATE TABLE User_Interactions;
+TRUNCATE TABLE Availability;
+TRUNCATE TABLE Book_Editions;
+TRUNCATE TABLE Related_Books;
+TRUNCATE TABLE Book_Tags;
+TRUNCATE TABLE Book_Genres;
+TRUNCATE TABLE Books;
+TRUNCATE TABLE Genres;
+TRUNCATE TABLE Tags;
+TRUNCATE TABLE Authors;
+TRUNCATE TABLE Users;
+
+SET FOREIGN_KEY_CHECKS = 1; -- Re-enable foreign key checks
+
+-- insert_data.sql
+
 -- Inserting data into Authors
 INSERT INTO Authors (name, bio) VALUES 
 ('J.K. Rowling', 'British author, best known for the Harry Potter series.'),
@@ -22,29 +41,11 @@ INSERT INTO Tags (tag_name) VALUES
 ('New Release'),
 ('Must-Read');
 
--- Inserting data into Book_Editions
-INSERT INTO Book_Editions (edition_name, book_id, publication_date) VALUES 
-('Hardcover', 1, '1997-06-26'),
-('Paperback', 1, '1998-08-01'),
-('eBook', 1, '2012-05-01'),
-('Hardcover', 2, '1996-08-06'),
-('Paperback', 2, '1997-06-01'),
-('eBook', 2, '2011-09-01'),
-('Deluxe Edition', 1, '2024-01-01');
-
--- Inserting data into Availability
-INSERT INTO Availability (location, book_id, format) VALUES 
-('Online Store', 1, 'Hardcover'),
-('Local Bookstore', 1, 'Paperback'),
-('Online Store', 2, 'eBook'),
-('Local Bookstore', 2, 'Hardcover'),
-('New York Public Library', 3, 'Hardcover');
-
--- Inserting data into Books
-INSERT INTO Books (title, description, cover_image_1, cover_image_2, cover_image_3, cover_image_4, cover_image_5) VALUES 
-('Harry Potter and the Sorcerer\'s Stone', 'The first book in the Harry Potter series.', NULL, NULL, NULL, NULL, NULL),
-('A Game of Thrones', 'The first book in the A Song of Ice and Fire series.', NULL, NULL, NULL, NULL, NULL),
-('The Hobbit', 'A fantasy novel and children\'s book by J.R.R. Tolkien.', NULL, NULL, NULL, NULL, NULL);
+-- Inserting data into Books (make sure these IDs exist before adding editions)
+INSERT INTO Books (book_id, title, description, cover_image_1, cover_image_2, cover_image_3, cover_image_4, cover_image_5) VALUES 
+(1, 'Harry Potter and the Sorcerer\'s Stone', 'The first book in the Harry Potter series.', NULL, NULL, NULL, NULL, NULL),
+(2, 'A Game of Thrones', 'The first book in the A Song of Ice and Fire series.', NULL, NULL, NULL, NULL, NULL),
+(3, 'The Hobbit', 'A fantasy novel and children\'s book by J.R.R. Tolkien.', NULL, NULL, NULL, NULL, NULL);
 
 -- Inserting data into Book_Genres
 INSERT INTO Book_Genres (book_id, genre_id) VALUES 
@@ -62,6 +63,24 @@ INSERT INTO Book_Tags (book_id, tag_id) VALUES
 INSERT INTO Related_Books (book_id, related_book_id) VALUES 
 (1, 3), -- Harry Potter and the Sorcerer's Stone is related to The Hobbit
 (2, 1); -- A Game of Thrones is related to Harry Potter and the Sorcerer's Stone
+
+-- Inserting data into Book_Editions (now that books are in the table)
+INSERT INTO Book_Editions (edition_name, book_id, publication_date) VALUES 
+('Hardcover', 1, '1997-06-26'),
+('Paperback', 1, '1998-08-01'),
+('eBook', 1, '2012-05-01'),
+('Hardcover', 2, '1996-08-06'),
+('Paperback', 2, '1997-06-01'),
+('eBook', 2, '2011-09-01'),
+('Deluxe Edition', 1, '2024-01-01');
+
+-- Inserting data into Availability
+INSERT INTO Availability (location, book_id, format) VALUES 
+('Online Store', 1, 'Hardcover'),
+('Local Bookstore', 1, 'Paperback'),
+('Online Store', 2, 'eBook'),
+('Local Bookstore', 2, 'Hardcover'),
+('New York Public Library', 3, 'Hardcover');
 
 -- Inserting data into Users
 INSERT INTO Users (username, email) VALUES 
